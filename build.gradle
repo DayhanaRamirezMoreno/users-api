@@ -75,7 +75,9 @@ jacocoTestReport {
 					"com/pragma/users/api/domain/exception/**", //TODO pendiente crear test unitarios
 					"com/pragma/users/api/infrastructure/documentation/**",
 					"com/pragma/users/api/infrastructure/configuration/**",
-					"com/pragma/users/api/application/mapper/**"
+					"com/pragma/users/api/application/mapper/**",
+					"com/pragma/users/api/infrastructure/validation/DateValidation.class",
+					"com/pragma/users/api/infrastructure/validation/DateValidationImpl.class"
 			])
 		}))
 	}

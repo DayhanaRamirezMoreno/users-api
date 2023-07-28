@@ -61,4 +61,12 @@ public class UserModel {
     public Long getIdRole() {
         return idRole;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setIdRole(Long idRole) {
+        this.idRole = idRole;
+    }
 }
