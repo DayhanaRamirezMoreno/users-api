@@ -1,6 +1,8 @@
 package com.pragma.users.api.infrastructure.configuration;
 
+import com.pragma.users.api.domain.api.IUserServicePort;
 import com.pragma.users.api.domain.spi.IUserPersistencePort;
+import com.pragma.users.api.domain.usecase.UserUseCase;
 import com.pragma.users.api.infrastructure.out.jpa.adapter.UserJpaAdapter;
 import com.pragma.users.api.infrastructure.out.jpa.mapper.IUserEntityMapper;
 import com.pragma.users.api.infrastructure.out.jpa.repository.IUserRepository;
@@ -17,5 +19,10 @@ public class BeanConfiguration {
     @Bean
     public IUserPersistencePort userPersistencePort() {
         return new UserJpaAdapter(userRepository, userEntityMapper);
+    }
+
+    @Bean
+    public IUserServicePort userServicePort(){
+        return new UserUseCase(userPersistencePort());
     }
 }
