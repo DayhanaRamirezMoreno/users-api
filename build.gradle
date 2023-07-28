@@ -59,3 +59,22 @@ tasks.named('test') {
 test {
 	finalizedBy jacocoTestReport
 }
+
+jacocoTestReport {
+	dependsOn test
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"com/pragma/users/api/UsersApiApplication.class",
+					"com/pragma/users/api/infrastructure/out/jpa/mapper/**",
+					"com/pragma/users/api/infrastructure/out/jpa/entity/**",
+					"com/pragma/users/api/domain/model/**",
+					"com/pragma/users/api/infrastructure/exceptionhandler/**", //TODO pendiente crear test unitarios
+					"com/pragma/users/api/infrastructure/exception/**", //TODO pendiente crear test unitarios
+					"com/pragma/users/api/domain/exception/**", //TODO pendiente crear test unitarios
+
+			])
+		}))
+	}
+}

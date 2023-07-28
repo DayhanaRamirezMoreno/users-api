@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.Collections;
 import java.util.Map;
 
+//TODO pendiente crear exception handler para Repository Exception
 @ControllerAdvice
 public class ControllerAdvisor {
 
@@ -18,7 +19,11 @@ public class ControllerAdvisor {
     public ResponseEntity<Map<String, String>> handleNoDataFoundException(
             NoDataFoundException ignoredNoDataFoundException) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap(MESSAGE, ExceptionResponse.NO_DATA_FOUND.getMessage()));
+                .body(handle(ExceptionResponse.NO_DATA_FOUND.getMessage()));
+    }
+
+    private Map<String, String> handle(String message){
+        return Collections.singletonMap(MESSAGE, message);
     }
     
 }
