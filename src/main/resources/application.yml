@@ -11,5 +11,5 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-appDescription: "Pragma Powerup"
+appDescription: "App to retrieve users"
 appVersion: "1.0.0"
