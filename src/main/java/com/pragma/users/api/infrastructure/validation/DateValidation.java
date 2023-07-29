@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = DateValidationImpl.class)
 @Documented
 public @interface DateValidation {
-    String message() default "El propietario debe ser mayor de edad";
+    String message() default "Owner must be >= 18";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

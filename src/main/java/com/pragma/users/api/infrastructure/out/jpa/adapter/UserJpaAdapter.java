@@ -8,8 +8,6 @@ import com.pragma.users.api.infrastructure.out.jpa.entity.UserEntity;
 import com.pragma.users.api.infrastructure.out.jpa.mapper.IUserEntityMapper;
 import com.pragma.users.api.infrastructure.out.jpa.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
@@ -20,16 +18,13 @@ public class UserJpaAdapter implements IUserPersistencePort {
     private final IUserRepository userRepository;
     private final IUserEntityMapper userEntityMapper;
 
-    private final Logger logger = LoggerFactory.getLogger(UserJpaAdapter.class);
-
     @Override
     public void save(UserModel userModel) {
         try {
             UserEntity userEntity = userEntityMapper.toEntity(userModel);
             userRepository.save(userEntity);
         } catch (Exception exception) {
-            String message = String.format(ExceptionResponse.REPOSITORY_EXCEPTION.getMessage(), userModel.getId());
-            logger.error(message);
+            String message = String.format(ExceptionResponse.REPOSITORY_EXCEPTION.getMessage(), userModel.getId()) + " caused by: " + exception.getMessage();
             throw new RepositoryException(message, exception);
         }
     }
