@@ -36,6 +36,7 @@ dependencies {
 	developmentOnly "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
 	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.2'
+	implementation 'com.amazonaws:aws-java-sdk-cognitoidp:1.12.517'
 
 	runtimeOnly "mysql:mysql-connector-java:${mySqlConnectorVersion}"
 
