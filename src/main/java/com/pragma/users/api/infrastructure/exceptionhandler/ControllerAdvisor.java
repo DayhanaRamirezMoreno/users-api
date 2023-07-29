@@ -1,5 +1,6 @@
 package com.pragma.users.api.infrastructure.exceptionhandler;
 
+import com.pragma.users.api.infrastructure.exception.BadRequestException;
 import com.pragma.users.api.infrastructure.exception.NoDataFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,13 @@ public class ControllerAdvisor {
             NoDataFoundException ignoredNoDataFoundException) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(handle(ExceptionResponse.NO_DATA_FOUND.getMessage()));
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Map<String, String>> handleBadRequestException(
+            BadRequestException badRequestException) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(handle(badRequestException.getMessage()));
     }
 
     private Map<String, String> handle(String message){

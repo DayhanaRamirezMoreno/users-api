@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,6 +50,25 @@ class UserRestControllerTest {
                 .andExpect(status().isCreated());
 
         verify(userHandler).save(any(), any());
+    }
+
+    @Test
+    void saveOwnerFailsWhenBirthdateIsNull() throws Exception {
+        UserRequestDto dto = new UserRequestDto(
+                "testName",
+                "testLastName",
+                "123456789",
+                "3104721560",
+                null,
+                "test@test.com",
+                "123456");
+
+        mockMvc.perform(post("/api/v1/user/save/owner")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(dto)))
+                .andExpect(status().isBadRequest());
+
+        verify(userHandler, times(0)).save(any(), any());
     }
 
     @Test
