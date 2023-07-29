@@ -7,21 +7,17 @@ import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 
 @Service
-public class DateValidationImpl implements ConstraintValidator<DateValidation, LocalDate> {
+public class DateValidationImpl implements ConstraintValidator<DateValidation, String> {
     @Override
-    public void initialize(DateValidation constraintAnnotation) {
-
-    }
-
-    @Override
-    public boolean isValid(LocalDate date, ConstraintValidatorContext context) {
+    public boolean isValid(String date, ConstraintValidatorContext context) {
         if (date == null) {
             return true;
         }
 
         LocalDate actualDate = LocalDate.now();
         LocalDate minusYears = actualDate.minusYears(18);
+        LocalDate parsedDate = LocalDate.parse(date);
 
-        return date.isBefore(minusYears);
+        return parsedDate.isBefore(minusYears);
     }
 }
