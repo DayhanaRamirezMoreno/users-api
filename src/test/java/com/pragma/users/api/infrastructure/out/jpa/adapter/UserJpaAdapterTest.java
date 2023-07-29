@@ -1,7 +1,9 @@
 package com.pragma.users.api.infrastructure.out.jpa.adapter;
 
+import com.pragma.users.api.domain.model.Role;
 import com.pragma.users.api.domain.model.UserModel;
 import com.pragma.users.api.infrastructure.exception.RepositoryException;
+import com.pragma.users.api.infrastructure.out.jpa.entity.RoleEntity;
 import com.pragma.users.api.infrastructure.out.jpa.entity.UserEntity;
 import com.pragma.users.api.infrastructure.out.jpa.mapper.IUserEntityMapper;
 import com.pragma.users.api.infrastructure.out.jpa.repository.IUserRepository;
@@ -30,6 +32,7 @@ class UserJpaAdapterTest {
 
     @Test
     void saveUserTest() {
+        RoleEntity roleEntity = new RoleEntity(1L, Role.ROLE_ADMIN, "testDescription");
         UserEntity userEntity = new UserEntity(
                 1L,
                 "anyName",
@@ -39,7 +42,7 @@ class UserJpaAdapterTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                1L
+                roleEntity
         );
         UserModel userModel = new UserModel(
                 1L,
@@ -63,6 +66,7 @@ class UserJpaAdapterTest {
 
     @Test
     void throwRepositoryExceptionWhenSaveFailsTest() {
+        RoleEntity roleEntity = new RoleEntity(1L, Role.ROLE_ADMIN, "testDescription");
         UserEntity userEntity = new UserEntity(
                 123L,
                 "anyName",
@@ -72,7 +76,7 @@ class UserJpaAdapterTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                1L
+                roleEntity
         );
         UserModel userModel = new UserModel(
                 123L,

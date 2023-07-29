@@ -35,5 +35,7 @@ public class UserEntity {
 
     private String password;
 
-    private Long idRole;
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_role")
+    private RoleEntity role;
 }
