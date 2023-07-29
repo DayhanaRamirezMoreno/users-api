@@ -94,7 +94,7 @@ class UserJpaAdapterTest {
 
         verify(userEntityMapper).toEntity(userModel);
         verify(userRepository).save(userEntity);
-        Assertions.assertEquals("An error happened during while saving an user: 123", exception.getMessage());
+        Assertions.assertEquals("An error happened during while saving an user: 123 caused by: test", exception.getMessage());
         Assertions.assertTrue(exception.getCause() instanceof NullPointerException);
     }
 
@@ -119,7 +119,7 @@ class UserJpaAdapterTest {
 
         verify(userEntityMapper).toEntity(userModel);
         verify(userRepository, times(0)).save(any());
-        Assertions.assertEquals("An error happened during while saving an user: 123", exception.getMessage());
+        Assertions.assertEquals("An error happened during while saving an user: 123 caused by: test", exception.getMessage());
         Assertions.assertTrue(exception.getCause() instanceof NullPointerException);
     }
 }

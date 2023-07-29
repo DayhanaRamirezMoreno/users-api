@@ -71,9 +71,6 @@ jacocoTestReport {
 					"com/pragma/users/api/infrastructure/out/jpa/mapper/**",
 					"com/pragma/users/api/infrastructure/out/jpa/entity/**",
 					"com/pragma/users/api/domain/model/**",
-					"com/pragma/users/api/infrastructure/exceptionhandler/**", //TODO pendiente crear test unitarios
-					"com/pragma/users/api/infrastructure/exception/**", //TODO pendiente crear test unitarios
-					"com/pragma/users/api/domain/exception/**", //TODO pendiente crear test unitarios
 					"com/pragma/users/api/infrastructure/documentation/**",
 					"com/pragma/users/api/infrastructure/configuration/**",
 					"com/pragma/users/api/application/mapper/**",
