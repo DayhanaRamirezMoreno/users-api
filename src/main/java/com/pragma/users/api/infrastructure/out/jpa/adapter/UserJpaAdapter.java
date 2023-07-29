@@ -4,6 +4,7 @@ import com.pragma.users.api.domain.model.UserModel;
 import com.pragma.users.api.domain.spi.IUserPersistencePort;
 import com.pragma.users.api.infrastructure.exception.RepositoryException;
 import com.pragma.users.api.infrastructure.exceptionhandler.ExceptionResponse;
+import com.pragma.users.api.infrastructure.out.jpa.entity.RoleEntity;
 import com.pragma.users.api.infrastructure.out.jpa.entity.UserEntity;
 import com.pragma.users.api.infrastructure.out.jpa.mapper.IUserEntityMapper;
 import com.pragma.users.api.infrastructure.out.jpa.repository.IUserRepository;
@@ -22,6 +23,8 @@ public class UserJpaAdapter implements IUserPersistencePort {
     public void save(UserModel userModel) {
         try {
             UserEntity userEntity = userEntityMapper.toEntity(userModel);
+            RoleEntity roleEntity = new RoleEntity(userModel.getIdRole());
+            userEntity.setRole(roleEntity);
             userRepository.save(userEntity);
         } catch (Exception exception) {
             String message = String.format(ExceptionResponse.REPOSITORY_EXCEPTION.getMessage(), userModel.getId()) + " caused by: " + exception.getMessage();
