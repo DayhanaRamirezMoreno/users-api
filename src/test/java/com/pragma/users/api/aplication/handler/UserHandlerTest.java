@@ -21,7 +21,7 @@ import java.time.LocalDate;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserHandlerTest {
+class UserHandlerTest {
 
     @InjectMocks
     private UserHandler userHandler;
@@ -45,7 +45,7 @@ public class UserHandlerTest {
                 "testLastName",
                 "123456789",
                 "3104721560",
-                LocalDate.now(),
+                "2000-01-25",
                 "test@test.com",
                 "123456");
 

@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.Map;
 
 //TODO pendiente crear exception handler para Repository Exception
+//TODO pendiente crear exception handler para BadRequest Exception
+//TODO: Crear handler de Javax Validation
 @ControllerAdvice
 public class ControllerAdvisor {
 

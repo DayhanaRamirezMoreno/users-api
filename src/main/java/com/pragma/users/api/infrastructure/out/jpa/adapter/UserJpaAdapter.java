@@ -28,7 +28,7 @@ public class UserJpaAdapter implements IUserPersistencePort {
             UserEntity userEntity = userEntityMapper.toEntity(userModel);
             userRepository.save(userEntity);
         } catch (Exception exception) {
-            String message = String.format(ExceptionResponse.REPOSITORY_EXCEPTION.getMessage(), userModel.getId(), "dddddd");
+            String message = String.format(ExceptionResponse.REPOSITORY_EXCEPTION.getMessage(), userModel.getId());
             logger.error(message);
             throw new RepositoryException(message, exception);
         }
