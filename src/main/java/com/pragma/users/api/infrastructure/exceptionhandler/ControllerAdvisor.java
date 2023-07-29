@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -39,7 +40,11 @@ public class ControllerAdvisor {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleException(Exception exception) {
+    public ResponseEntity<Map<String, String>> handleException(Exception exception, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(handle(bindingResult.getFieldError().getDefaultMessage(), exception));
+        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(handle(exception.getMessage(), exception));
     }
