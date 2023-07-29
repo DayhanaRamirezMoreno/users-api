@@ -2,6 +2,7 @@ package com.pragma.users.api.infrastructure.exceptionhandler;
 
 import com.pragma.users.api.infrastructure.exception.BadRequestException;
 import com.pragma.users.api.infrastructure.exception.RepositoryException;
+import com.pragma.users.api.infrastructure.exception.SignUpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,12 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleException(Exception exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(handle(exception.getMessage(), exception));
+    }
+
+    @ExceptionHandler(SignUpException.class)
+    public ResponseEntity<Map<String, String>> handleSignUpException(Exception exception) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(handle(exception.getMessage(), exception));
     }
