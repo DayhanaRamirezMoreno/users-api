@@ -4,5 +4,4 @@ import com.pragma.users.api.domain.model.UserModel;
 
 public interface IUserPersistencePort {
     void save(UserModel userModel);
-
 }

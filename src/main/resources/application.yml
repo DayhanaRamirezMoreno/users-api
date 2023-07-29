@@ -11,5 +11,25 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_EFzNkvd5I
+
 appDescription: "App to retrieve users"
 appVersion: "1.0.0"
+
+aws:
+  cognito:
+    clientId: 7ob2a627tkpjou1tn4rtt1vj2l
+    userPoolId: us-east-2_EFzNkvd5I
+    region: us-east-2
+    connectionTimeout: 2000
+    readTimeout: 2000
+    identityPoolUrl: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_EFzNkvd5I
+    jwk: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_EFzNkvd5I/.well-known/jwks.json
+  access:
+    key: ${AWS_ACCESS_KEY}
+  secret:
+    key: $AWS_SECRET_KEY}
