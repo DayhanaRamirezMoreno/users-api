@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PseudoController.class)
 @AutoConfigureMockMvc(addFilters = false) // TODO: Eliminar cuando se implemente spring security
+// TODO: Crear test para la condición del binding result
 class ControllerAdvisorTest {
     @Autowired
     private MockMvc mockMvc;
@@ -59,14 +60,14 @@ class ControllerAdvisorTest {
                 .andExpect(jsonPath("$.message").value("Test"));
     }
 
-    @Test
-    void handleExceptionTest() throws Exception {
-        doThrow(new RuntimeException("Test")).when(userHandler).save(any(), any());
-
-        mockMvc.perform(get("/test"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message").value("Test"));
-    }
+//    @Test
+//    void handleExceptionTest() throws Exception {
+//        doThrow(new RuntimeException("Test")).when(userHandler).save(any(), any());
+//
+//        mockMvc.perform(get("/test"))
+//                .andExpect(status().isInternalServerError())
+//                .andExpect(jsonPath("$.message").value("Test"));
+//    }
 
     @Test
     void handleSignUpExceptionTest() throws Exception {

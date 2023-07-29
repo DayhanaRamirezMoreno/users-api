@@ -29,7 +29,7 @@ public class CognitoService implements IUserPersistencePort {
                     .withUsername(userModel.getEmail())
                     .withUserAttributes(attributeType);
             awsCognitoIdentityProvider.signUp(signUpRequest);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new SignUpException("Cognito sign up failed", e);
         }
     }
