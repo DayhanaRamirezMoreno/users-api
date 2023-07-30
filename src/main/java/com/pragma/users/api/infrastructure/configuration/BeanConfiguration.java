@@ -2,6 +2,7 @@ package com.pragma.users.api.infrastructure.configuration;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.pragma.users.api.domain.api.IUserServicePort;
+import com.pragma.users.api.domain.spi.IUserCognitoPersistencePort;
 import com.pragma.users.api.domain.spi.IUserPersistencePort;
 import com.pragma.users.api.domain.usecase.UserUseCase;
 import com.pragma.users.api.infrastructure.aws.cognito.CognitoService;
@@ -18,19 +19,20 @@ public class BeanConfiguration {
     private final IUserRepository userRepository;
     private final IUserEntityMapper userEntityMapper;
     private final AWSCognitoIdentityProvider awsCognitoIdentityProvider;
+    private final IUserCognitoPersistencePort userCognitoPersistencePort;
 
     @Bean
     public IUserPersistencePort userPersistencePort() {
         return new UserJpaAdapter(userRepository, userEntityMapper);
     }
 
-    @Bean
-    public IUserPersistencePort userCognitoPersistencePort() {
-        return new CognitoService(awsCognitoIdentityProvider);
-    }
+//    @Bean
+//    public IUserPersistencePort userCognitoPersistencePort() {
+//        return new CognitoService(awsCognitoIdentityProvider);
+//    }
 
     @Bean
     public IUserServicePort userServicePort(){
-        return new UserUseCase(userPersistencePort(), userCognitoPersistencePort());
+        return new UserUseCase(userPersistencePort(), userCognitoPersistencePort);
     }
 }

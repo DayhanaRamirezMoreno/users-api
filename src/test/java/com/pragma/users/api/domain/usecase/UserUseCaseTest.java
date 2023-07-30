@@ -1,9 +1,12 @@
 package com.pragma.users.api.domain.usecase;
 
+import com.pragma.users.api.application.dto.request.SignInDto;
 import com.pragma.users.api.domain.model.UserModel;
+import com.pragma.users.api.domain.spi.IUserCognitoPersistencePort;
 import com.pragma.users.api.domain.spi.IUserPersistencePort;
 import com.pragma.users.api.infrastructure.aws.cognito.CognitoService;
 import com.pragma.users.api.infrastructure.out.jpa.adapter.UserJpaAdapter;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +29,7 @@ class UserUseCaseTest {
     private IUserPersistencePort userPersistencePort;
 
     @Mock
-    private IUserPersistencePort userCognitoPersistencePort;
+    private IUserCognitoPersistencePort userCognitoPersistencePort;
 
     private UserUseCase userUseCase;
 
@@ -55,5 +58,18 @@ class UserUseCaseTest {
 
         verify(userCognitoPersistencePort).save(userModel);
         verify(userPersistencePort).save(userModel);
+    }
+
+    @Test
+    void signInUser(){
+        SignInDto dto = new SignInDto("test@test.com", "123456");
+        String token = "test";
+        when(userCognitoPersistencePort.signIn(dto)).thenReturn(token);
+
+        String newToken = userUseCase.SignInUser(dto);
+
+        verify(userCognitoPersistencePort).signIn(dto);
+        Assertions.assertEquals("test", newToken);
+
     }
 }

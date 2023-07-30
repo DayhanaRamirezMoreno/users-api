@@ -1,9 +1,10 @@
 package com.pragma.users.api.infrastructure.aws.cognito;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
-import com.amazonaws.services.cognitoidp.model.SignUpRequest;
-import com.amazonaws.services.cognitoidp.model.SignUpResult;
+import com.amazonaws.services.cognitoidp.model.*;
+import com.pragma.users.api.application.dto.request.SignInDto;
 import com.pragma.users.api.domain.model.UserModel;
+import com.pragma.users.api.infrastructure.exception.SignInException;
 import com.pragma.users.api.infrastructure.exception.SignUpException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ class CognitoServiceTest {
 
     @Captor
     private ArgumentCaptor<SignUpRequest> signUpRequestCaptor;
+
+    @Captor
+    private ArgumentCaptor<InitiateAuthRequest> initiateAuthRequestArgumentCaptor;
 
     @Test
     void saveTest() {
@@ -77,5 +81,38 @@ class CognitoServiceTest {
 
         verify(awsCognitoIdentityProvider).signUp(signUpRequestCaptor.capture());
         Assertions.assertNotNull(signUpRequestCaptor.getValue());
+    }
+
+    @Test
+    void signInTest(){
+        SignInDto dto = new SignInDto("test@test.com", "123456");
+        InitiateAuthResult initiateAuthResult = new InitiateAuthResult();
+        AuthenticationResultType authenticationResultType = new AuthenticationResultType();
+        authenticationResultType.setAccessToken("token");
+        initiateAuthResult.setAuthenticationResult(authenticationResultType);
+
+        initiateAuthResult.setAuthenticationResult(new AuthenticationResultType());
+
+        when(awsCognitoIdentityProvider.initiateAuth(any())).thenReturn(initiateAuthResult);
+
+        cognitoService.signIn(dto);
+
+        verify(awsCognitoIdentityProvider).initiateAuth(initiateAuthRequestArgumentCaptor.capture());
+        Assertions.assertNotNull(initiateAuthRequestArgumentCaptor.getValue());
+        InitiateAuthRequest initiateAuthRequest = initiateAuthRequestArgumentCaptor.getValue();
+        Assertions.assertTrue(initiateAuthRequest.getAuthParameters().containsValue("test@test.com"));
+        Assertions.assertTrue(initiateAuthRequest.getAuthParameters().containsValue("123456"));
+
+    }
+
+    @Test
+    void signInFailedTest(){
+        SignInDto dto = new SignInDto("test@test.com", "123456");
+
+        when(awsCognitoIdentityProvider.initiateAuth(any())).thenThrow(new RuntimeException("test"));
+
+        Assertions.assertThrows(SignInException.class, () -> cognitoService.signIn(dto));
+        verify(awsCognitoIdentityProvider).initiateAuth(initiateAuthRequestArgumentCaptor.capture());
+        Assertions.assertNotNull(initiateAuthRequestArgumentCaptor.getValue());
     }
 }

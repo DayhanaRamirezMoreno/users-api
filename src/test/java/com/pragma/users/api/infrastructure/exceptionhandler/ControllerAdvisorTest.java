@@ -62,7 +62,7 @@ class ControllerAdvisorTest {
 
 //    @Test
 //    void handleExceptionTest() throws Exception {
-//        doThrow(new RuntimeException("Test")).when(userHandler).save(any(), any());
+//        doThrow(new Exception("Test")).when(userHandler).save(any(), any());
 //
 //        mockMvc.perform(get("/test"))
 //                .andExpect(status().isInternalServerError())
