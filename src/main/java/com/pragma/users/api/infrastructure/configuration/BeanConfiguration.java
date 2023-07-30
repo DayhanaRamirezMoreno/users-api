@@ -26,13 +26,13 @@ public class BeanConfiguration {
         return new UserJpaAdapter(userRepository, userEntityMapper);
     }
 
-//    @Bean
-//    public IUserPersistencePort userCognitoPersistencePort() {
-//        return new CognitoService(awsCognitoIdentityProvider);
-//    }
+    @Bean
+    public IUserCognitoPersistencePort userCognitoPersistencePort() {
+        return new CognitoService(awsCognitoIdentityProvider);
+    }
 
     @Bean
-    public IUserServicePort userServicePort(){
+    public IUserServicePort userServicePort() {
         return new UserUseCase(userPersistencePort(), userCognitoPersistencePort);
     }
 }

@@ -21,8 +21,7 @@ public class CognitoService implements IUserCognitoPersistencePort {
     private final AWSCognitoIdentityProvider awsCognitoIdentityProvider;
 
     @Value("${aws.cognito.clientId}")
-    private final String clientId;
-
+    private String clientId;
 
     @Override
     public void save(UserModel userModel) {
