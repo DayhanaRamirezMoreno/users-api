@@ -2,6 +2,7 @@ package com.pragma.users.api.infrastructure.input.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pragma.users.api.application.dto.request.SignInDto;
 import com.pragma.users.api.application.dto.request.UserRequestDto;
 import com.pragma.users.api.application.handler.IUserHandler;
 import com.pragma.users.api.domain.model.Role;
@@ -15,8 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -109,6 +108,19 @@ class UserRestControllerTest {
                 .andExpect(status().isCreated());
 
         verify(userHandler).save(any(), any());
+    }
+
+    @Test
+    void signInUserTest() throws Exception {
+        SignInDto dto = new SignInDto("test@test.com", "123456");
+        when(userHandler.signIn(dto)).thenReturn(anyString());
+        mockMvc.perform(post("/api/v1/user/sing-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(dto)))
+                .andExpect(status().isOk());
+
+
+        verify(userHandler).signIn(any());
     }
 
     private String asJsonString(Object obj) throws JsonProcessingException {

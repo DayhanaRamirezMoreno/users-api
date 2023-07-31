@@ -5,5 +5,5 @@ import com.pragma.users.api.domain.model.UserModel;
 
 public interface IUserServicePort {
     void save(UserModel userModel);
-    String SignInUser(SignInDto dto);
+    String signInUser(SignInDto dto);
 }
