@@ -27,7 +27,7 @@ public class SpringSecurityConfig {
                     return corsConfiguration;
                 }).and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/user/save/client")
+                .antMatchers("/api/v1/user/save/client", "/api/v1/user/sing-in")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -35,5 +35,4 @@ public class SpringSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
-
 }

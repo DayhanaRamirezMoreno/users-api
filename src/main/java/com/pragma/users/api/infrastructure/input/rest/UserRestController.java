@@ -1,6 +1,8 @@
 package com.pragma.users.api.infrastructure.input.rest;
 
+import com.pragma.users.api.application.dto.request.SignInDto;
 import com.pragma.users.api.application.dto.request.UserRequestDto;
+import com.pragma.users.api.application.dto.response.ResponseMessageDto;
 import com.pragma.users.api.application.handler.IUserHandler;
 import com.pragma.users.api.domain.model.Role;
 import com.pragma.users.api.infrastructure.exception.BadRequestException;
@@ -40,5 +42,9 @@ public class UserRestController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
+    @PostMapping(value = "/sing-in", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseMessageDto> signInUser(@Valid @RequestBody SignInDto dto) {
+        String token = userHandler.signIn(dto);
+        return new ResponseEntity<>(new ResponseMessageDto(token), HttpStatus.OK);
+    }
 }

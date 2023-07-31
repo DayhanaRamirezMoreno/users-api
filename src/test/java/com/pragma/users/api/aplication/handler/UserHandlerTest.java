@@ -1,12 +1,12 @@
 package com.pragma.users.api.aplication.handler;
 
+import com.pragma.users.api.application.dto.request.SignInDto;
 import com.pragma.users.api.application.dto.request.UserRequestDto;
 import com.pragma.users.api.application.handler.impl.UserHandler;
 import com.pragma.users.api.application.mapper.IUserRequestMapper;
 import com.pragma.users.api.domain.api.IUserServicePort;
 import com.pragma.users.api.domain.model.Role;
 import com.pragma.users.api.domain.model.UserModel;
-import com.pragma.users.api.infrastructure.validation.Encrypt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,23 +23,19 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserHandlerTest {
 
+    @Captor
+    ArgumentCaptor<UserModel> userModelCaptor;
+    @Captor
+    ArgumentCaptor<SignInDto> dtoCaptor;
     @InjectMocks
     private UserHandler userHandler;
-
     @Mock
     private IUserServicePort servicePort;
-
     @Mock
     private IUserRequestMapper userRequestMapper;
 
-    @Mock
-    private Encrypt encrypt;
-
-    @Captor
-    ArgumentCaptor<UserModel> userModelCaptor;
-
     @Test
-    void saveTest(){
+    void saveTest() {
         UserRequestDto dto = new UserRequestDto(
                 "testName",
                 "testLastName",
@@ -61,13 +57,11 @@ class UserHandlerTest {
                 1L
         );
         when(userRequestMapper.dtoToUserModel(dto)).thenReturn(userModel);
-        when(encrypt.encryptPassword(anyString())).thenReturn("hashedPassword");
         doNothing().when(servicePort).save(any(UserModel.class));
 
         userHandler.save(dto, Role.ROLE_CLIENT);
 
         verify(userRequestMapper).dtoToUserModel(dto);
-        verify(encrypt).encryptPassword("123456");
         verify(servicePort).save(userModelCaptor.capture());
         Assertions.assertNotNull(userModelCaptor.getValue());
         UserModel userModelCaptured = userModelCaptor.getValue();
@@ -78,7 +72,19 @@ class UserHandlerTest {
         Assertions.assertEquals("+3104721560", userModelCaptured.getCellphone());
         Assertions.assertNotNull(userModelCaptured.getBirthdate());
         Assertions.assertEquals("test@test.com", userModelCaptured.getEmail());
-        Assertions.assertEquals("hashedPassword", userModelCaptured.getPassword());
         Assertions.assertEquals(4L, userModelCaptured.getIdRole());
+    }
+
+    @Test
+    void singIn() {
+        SignInDto dto = new SignInDto("test@test.com", "123456");
+        when(servicePort.signInUser(dto)).thenReturn(anyString());
+
+        userHandler.signIn(dto);
+
+        verify(servicePort).signInUser(dtoCaptor.capture());
+        SignInDto capturedDto = dtoCaptor.getValue();
+        Assertions.assertEquals(dto.getEmail(), capturedDto.getEmail());
+        Assertions.assertEquals(dto.getPassword(), capturedDto.getPassword());
     }
 }
