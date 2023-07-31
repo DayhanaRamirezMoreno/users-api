@@ -5,6 +5,7 @@ import com.pragma.users.api.application.handler.IUserHandler;
 import com.pragma.users.api.domain.model.Role;
 import com.pragma.users.api.infrastructure.exception.BadRequestException;
 import com.pragma.users.api.infrastructure.exception.RepositoryException;
+import com.pragma.users.api.infrastructure.exception.SignInException;
 import com.pragma.users.api.infrastructure.exception.SignUpException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,15 @@ class ControllerAdvisorTest {
     @Test
     void handleSignUpExceptionTest() throws Exception {
         doThrow(new SignUpException("Test", new Exception())).when(userHandler).save(any(), any());
+
+        mockMvc.perform(get("/test"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message").value("Test"));
+    }
+
+    @Test
+    void handleSignInExceptionTest() throws Exception {
+        doThrow(new SignInException("Test", new Exception())).when(userHandler).save(any(), any());
 
         mockMvc.perform(get("/test"))
                 .andExpect(status().isInternalServerError())
