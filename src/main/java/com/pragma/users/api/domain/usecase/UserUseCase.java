@@ -8,7 +8,6 @@ import com.pragma.users.api.domain.spi.IUserPersistencePort;
 import com.pragma.users.api.infrastructure.validation.Encrypt;
 
 public class UserUseCase implements IUserServicePort {
-
     private final IUserPersistencePort userPersistencePort;
     private final IUserCognitoPersistencePort userCognitoPersistencePort;
     private final Encrypt encrypt;
@@ -29,5 +28,10 @@ public class UserUseCase implements IUserServicePort {
     @Override
     public String signInUser(SignInDto dto) {
         return userCognitoPersistencePort.signIn(dto);
+    }
+
+    @Override
+    public UserModel getUserByEmail(String email) {
+        return userPersistencePort.getUserByEmail(email);
     }
 }
