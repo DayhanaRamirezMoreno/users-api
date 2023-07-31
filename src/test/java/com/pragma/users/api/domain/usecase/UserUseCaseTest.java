@@ -71,4 +71,33 @@ class UserUseCaseTest {
         Assertions.assertEquals("test", newToken);
 
     }
+
+    @Test
+    void getUserByEmail() {
+        UserModel userModel = new UserModel(
+                1L,
+                "anyName",
+                "anyLastName",
+                "123456789",
+                "+57123456789",
+                LocalDate.now(),
+                "email@email.com",
+                "123456",
+                1L
+        );
+        when(userPersistencePort.getUserByEmail("email@email.com")).thenReturn(userModel);
+
+        UserModel newUser = userUseCase.getUserByEmail("email@email.com");
+
+        verify(userPersistencePort).getUserByEmail("email@email.com");
+        Assertions.assertEquals(1L, newUser.getId());
+        Assertions.assertEquals("anyName", newUser.getName());
+        Assertions.assertEquals("anyLastName", newUser.getLastName());
+        Assertions.assertEquals("123456789", newUser.getDocument());
+        Assertions.assertEquals("+57123456789", newUser.getCellphone());
+        Assertions.assertNotNull(newUser.getBirthdate());
+        Assertions.assertEquals("email@email.com", newUser.getEmail());
+        Assertions.assertEquals("123456", newUser.getPassword());
+        Assertions.assertEquals(1L, newUser.getIdRole());
+    }
 }
