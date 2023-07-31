@@ -2,6 +2,7 @@ package com.pragma.users.api.infrastructure.exceptionhandler;
 
 import com.pragma.users.api.infrastructure.exception.BadRequestException;
 import com.pragma.users.api.infrastructure.exception.RepositoryException;
+import com.pragma.users.api.infrastructure.exception.SignInException;
 import com.pragma.users.api.infrastructure.exception.SignUpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,13 @@ public class ControllerAdvisor {
     }
 
     @ExceptionHandler(SignUpException.class)
-    public ResponseEntity<Map<String, String>> handleSignUpException(Exception exception) {
+    public ResponseEntity<Map<String, String>> handleSignUpException(SignUpException exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(handle(exception.getMessage(), exception));
+    }
+
+    @ExceptionHandler(SignInException.class)
+    public ResponseEntity<Map<String, String>> handleSignInException(SignInException exception) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(handle(exception.getMessage(), exception));
     }
@@ -59,5 +66,4 @@ public class ControllerAdvisor {
         logger.error(message, exception);
         return Collections.singletonMap(MESSAGE, message);
     }
-
 }
