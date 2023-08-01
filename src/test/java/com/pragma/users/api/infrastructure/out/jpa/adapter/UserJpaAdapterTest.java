@@ -44,7 +44,8 @@ class UserJpaAdapterTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                roleEntity
+                roleEntity,
+                "email@email.com"
         );
         UserModel userModel = new UserModel(
                 1L,
@@ -55,7 +56,8 @@ class UserJpaAdapterTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                1L
+                1L,
+                "email@email.com"
         );
         when(userEntityMapper.toEntity(userModel)).thenReturn(userEntity);
         when(userRepository.save(any())).thenReturn(userEntity);
@@ -78,7 +80,8 @@ class UserJpaAdapterTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                roleEntity
+                roleEntity,
+                "email@email.com"
         );
         UserModel userModel = new UserModel(
                 123L,
@@ -89,7 +92,8 @@ class UserJpaAdapterTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                1L
+                1L,
+                "email@email.com"
         );
         when(userEntityMapper.toEntity(userModel)).thenReturn(userEntity);
         when(userRepository.save(userEntity)).thenThrow(new NullPointerException("test"));
@@ -115,7 +119,8 @@ class UserJpaAdapterTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                1L
+                1L,
+                "email@email.com"
         );
         when(userEntityMapper.toEntity(userModel)).thenThrow(new NullPointerException("test"));
 
@@ -141,7 +146,8 @@ class UserJpaAdapterTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                roleEntity
+                roleEntity,
+                "email@email.com"
         );
         UserModel userModel = new UserModel(
                 1L,
@@ -152,7 +158,8 @@ class UserJpaAdapterTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                1L
+                1L,
+                "email@email.com"
         );
         when(userRepository.findByEmail("email@email.com")).thenReturn(Optional.of(userEntity));
         when(userEntityMapper.toUserModel(userEntity)).thenReturn(userModel);
@@ -160,18 +167,19 @@ class UserJpaAdapterTest {
         userJpaAdapter.getUserByEmail("email@email.com");
 
         verify(userRepository).findByEmail("email@email.com");
+        verify(userRepository, times(0)).findByHashedEmail("email@email.com");
         verify(userEntityMapper).toUserModel(userEntity);
     }
 
     @Test
     void throwSignInExceptionWhenGetUserByEmailDoesNotReturnUserTest() {
-        when(userRepository.findByEmail("email@email.com")).thenReturn(Optional.empty());
+        when(userRepository.findByHashedEmail("email@email.com")).thenReturn(Optional.empty());
 
         RepositoryException exception = Assertions.assertThrows(RepositoryException.class, () -> {
             userJpaAdapter.getUserByEmail("email@email.com");
         });
 
-        verify(userRepository).findByEmail("email@email.com");
+        verify(userRepository).findByHashedEmail("email@email.com");
         verify(userEntityMapper, times(0)).toUserModel(any());
         Assertions.assertEquals("An error happened while fetching user by email caused by: Cannot find email", exception.getMessage());
         Assertions.assertTrue(exception.getCause() instanceof SignInException);
@@ -179,7 +187,7 @@ class UserJpaAdapterTest {
 
     @Test
     void throwRepositoryExceptionWhenGetUserByEmailTest() {
-        when(userRepository.findByEmail("email@email.com")).thenThrow(new RuntimeException("test", new Exception()));
+        when(userRepository.findByHashedEmail("email@email.com")).thenThrow(new RuntimeException("test", new Exception()));
 
         Exception exception = Assertions.assertThrows(Exception.class, () -> {
             userJpaAdapter.getUserByEmail("email@email.com");
@@ -187,5 +195,59 @@ class UserJpaAdapterTest {
 
         Assertions.assertEquals("An error happened while fetching user by email caused by: test", exception.getMessage());
         Assertions.assertTrue(exception.getCause() instanceof RuntimeException);
+    }
+
+    @Test
+    void getUserByHashedEmailTest() {
+        RoleEntity roleEntity = new RoleEntity(1L, Role.ROLE_ADMIN, "testDescription");
+        UserEntity userEntity = new UserEntity(
+                1L,
+                "anyName",
+                "anyLastName",
+                "123456789",
+                "+57123456789",
+                LocalDate.now(),
+                "email@email.com",
+                "123456",
+                roleEntity,
+                "email@email.com"
+        );
+        UserModel userModel = new UserModel(
+                1L,
+                "anyName",
+                "anyLastName",
+                "123456789",
+                "+57123456789",
+                LocalDate.now(),
+                "email@email.com",
+                "123456",
+                1L,
+                "email@email.com"
+        );
+        when(userRepository.findByEmail("email@email.com")).thenReturn(Optional.empty());
+        when(userRepository.findByHashedEmail("email@email.com")).thenReturn(Optional.of(userEntity));
+        when(userEntityMapper.toUserModel(userEntity)).thenReturn(userModel);
+
+        userJpaAdapter.getUserByEmail("email@email.com");
+
+        verify(userRepository).findByEmail("email@email.com");
+        verify(userRepository).findByHashedEmail("email@email.com");
+        verify(userEntityMapper).toUserModel(userEntity);
+    }
+
+    @Test
+    void throwSignInExceptionWhenGetUserByHashedEmailDoesNotReturnUserTest() {
+        when(userRepository.findByEmail("email@email.com")).thenReturn(Optional.empty());
+        when(userRepository.findByHashedEmail("email@email.com")).thenReturn(Optional.empty());
+
+        RepositoryException exception = Assertions.assertThrows(RepositoryException.class, () -> {
+            userJpaAdapter.getUserByEmail("email@email.com");
+        });
+
+        verify(userRepository).findByEmail("email@email.com");
+        verify(userRepository).findByHashedEmail("email@email.com");
+        verify(userEntityMapper, times(0)).toUserModel(any());
+        Assertions.assertEquals("An error happened while fetching user by email caused by: Cannot find email", exception.getMessage());
+        Assertions.assertTrue(exception.getCause() instanceof SignInException);
     }
 }

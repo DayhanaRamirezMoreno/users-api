@@ -1,5 +1,8 @@
 package com.pragma.users.api.domain.model;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public enum Role {
     ROLE_ADMIN(1L),
     ROLE_OWNER(2L),
@@ -14,5 +17,10 @@ public enum Role {
 
     public Long getId() {
         return id;
+    }
+
+    public static String getRoleName(Long idRole) {
+        return Arrays.stream(Role.values())
+                .filter(role -> Objects.equals(role.getId(), idRole)).findFirst().orElseThrow().name();
     }
 }

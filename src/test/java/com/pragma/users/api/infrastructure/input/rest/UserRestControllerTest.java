@@ -20,13 +20,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserRestController.class)
-@AutoConfigureMockMvc(addFilters = false) // TODO: Eliminar cuando se implemente spring security
+@AutoConfigureMockMvc(addFilters = false)
 class UserRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private IUserHandler userHandler;
+
+    @MockBean
+    private IControllerSignIn controllerSignIn;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -113,14 +116,16 @@ class UserRestControllerTest {
     @Test
     void signInUserTest() throws Exception {
         SignInDto dto = new SignInDto("test@test.com", "123456");
-        when(userHandler.signIn(dto)).thenReturn(anyString());
-        mockMvc.perform(post("/api/v1/user/sing-in")
+        when(userHandler.signIn(dto)).thenReturn("token");
+        doNothing().when(controllerSignIn).signIn(any());
+        mockMvc.perform(post("/api/v1/user/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(dto)))
                 .andExpect(status().isOk());
 
 
         verify(userHandler).signIn(any());
+        verify(controllerSignIn).signIn(any());
     }
 
     private String asJsonString(Object obj) throws JsonProcessingException {

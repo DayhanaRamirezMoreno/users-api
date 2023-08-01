@@ -46,7 +46,8 @@ class CognitoServiceTest {
                 LocalDate.now(),
                 "test@test.com",
                 "123456",
-                1L
+                1L,
+                "email@email.com"
         );
         when(awsCognitoIdentityProvider.signUp(any())).thenReturn(new SignUpResult());
 
@@ -73,7 +74,8 @@ class CognitoServiceTest {
                 LocalDate.now(),
                 "test@test.com",
                 "123456",
-                1L
+                1L,
+                "email@email.com"
         );
         when(awsCognitoIdentityProvider.signUp(any())).thenThrow(new RuntimeException("test"));
 
@@ -84,7 +86,7 @@ class CognitoServiceTest {
     }
 
     @Test
-    void signInTest(){
+    void signInTest() {
         SignInDto dto = new SignInDto("test@test.com", "123456");
         InitiateAuthResult initiateAuthResult = new InitiateAuthResult();
         AuthenticationResultType authenticationResultType = new AuthenticationResultType();
@@ -106,7 +108,7 @@ class CognitoServiceTest {
     }
 
     @Test
-    void signInFailedTest(){
+    void signInFailedTest() {
         SignInDto dto = new SignInDto("test@test.com", "123456");
 
         when(awsCognitoIdentityProvider.initiateAuth(any())).thenThrow(new RuntimeException("test"));

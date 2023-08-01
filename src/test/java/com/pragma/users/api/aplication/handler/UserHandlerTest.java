@@ -54,7 +54,8 @@ class UserHandlerTest {
                 LocalDate.now(),
                 "test@test.com",
                 "123456",
-                1L
+                1L,
+                "email@email.com"
         );
         when(userRequestMapper.dtoToUserModel(dto)).thenReturn(userModel);
         doNothing().when(servicePort).save(any(UserModel.class));

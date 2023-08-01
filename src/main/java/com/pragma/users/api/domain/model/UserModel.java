@@ -13,8 +13,9 @@ public class UserModel {
     private String email;
     private String password;
     private Long idRole;
+    private String hashedEmail;
 
-    public UserModel(Long id, String name, String lastName, String document, String cellphone, LocalDate birthdate, String email, String password, Long idRole) {
+    public UserModel(Long id, String name, String lastName, String document, String cellphone, LocalDate birthdate, String email, String password, Long idRole, String hashedEmail) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -24,6 +25,7 @@ public class UserModel {
         this.email = email;
         this.password = password;
         this.idRole = idRole;
+        this.hashedEmail = hashedEmail;
     }
 
     public Long getId() {
@@ -58,15 +60,23 @@ public class UserModel {
         return password;
     }
 
-    public Long getIdRole() {
-        return idRole;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public Long getIdRole() {
+        return idRole;
+    }
+
     public void setIdRole(Long idRole) {
         this.idRole = idRole;
+    }
+
+    public String getHashedEmail() {
+        return this.hashedEmail;
+    }
+
+    public void setHashedEmail(String hashedEmail) {
+        this.hashedEmail = hashedEmail;
     }
 }

@@ -24,7 +24,7 @@ public class CognitoService implements IUserCognitoPersistencePort {
     private String clientId;
 
     @Override
-    public void save(UserModel userModel) {
+    public String save(UserModel userModel) {
         try {
             AttributeType attributeType = new AttributeType().withName("email").withValue(userModel.getEmail());
             SignUpRequest signUpRequest = new SignUpRequest()
@@ -32,7 +32,8 @@ public class CognitoService implements IUserCognitoPersistencePort {
                     .withPassword(userModel.getPassword())
                     .withUsername(userModel.getEmail())
                     .withUserAttributes(attributeType);
-            awsCognitoIdentityProvider.signUp(signUpRequest);
+            SignUpResult signUpResult = awsCognitoIdentityProvider.signUp(signUpRequest);
+            return signUpResult.getUserSub();
         } catch (RuntimeException e) {
             throw new SignUpException("Cognito sign up failed", e);
         }

@@ -38,8 +38,11 @@ public class UserJpaAdapter implements IUserPersistencePort {
     public UserModel getUserByEmail(String email) {
         try {
             Optional<UserEntity> userEntity = userRepository.findByEmail(email);
+            userEntity = userEntity.isEmpty() ? userRepository.findByHashedEmail(email) : userEntity;
             if (userEntity.isPresent()) {
-                return userEntityMapper.toUserModel(userEntity.get());
+                UserModel userModel = userEntityMapper.toUserModel(userEntity.get());
+                userModel.setIdRole(userEntity.get().getRole().getId());
+                return userModel;
             }
             throw new SignInException("Cannot find email", null);
         } catch (Exception exception) {

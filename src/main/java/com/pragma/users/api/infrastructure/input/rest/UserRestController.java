@@ -10,7 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -20,10 +24,12 @@ import javax.validation.Valid;
 public class UserRestController {
 
     private final IUserHandler userHandler;
+    private final IControllerSignIn controllerSignIn;
 
     @PostMapping(value = "/save/owner", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> saveOwner(@Valid @RequestBody UserRequestDto dto) {
-        if(dto.getBirthdate() == null){
+        if (dto.getBirthdate() == null) {
             throw new BadRequestException("Birthdate required");
         }
         userHandler.save(dto, Role.ROLE_OWNER);
@@ -37,14 +43,16 @@ public class UserRestController {
     }
 
     @PostMapping(value = "/save/employee", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<Void> saveEmployee(@Valid @RequestBody UserRequestDto dto) {
         userHandler.save(dto, Role.ROLE_EMPLOYEE);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping(value = "/sing-in", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/sign-in", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseMessageDto> signInUser(@Valid @RequestBody SignInDto dto) {
         String token = userHandler.signIn(dto);
+        controllerSignIn.signIn(dto.getEmail());
         return new ResponseEntity<>(new ResponseMessageDto(token), HttpStatus.OK);
     }
 }
