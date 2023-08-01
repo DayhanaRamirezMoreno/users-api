@@ -38,4 +38,6 @@ public class UserEntity {
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_role")
     private RoleEntity role;
+
+    private String hashedEmail;
 }

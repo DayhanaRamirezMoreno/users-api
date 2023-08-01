@@ -46,9 +46,10 @@ class UserUseCaseTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                1L
+                1L,
+                "email@email.com"
         );
-        doNothing().when(userCognitoPersistencePort).save(userModel);
+        when(userCognitoPersistencePort.save(userModel)).thenReturn("email@email.com");
         doNothing().when(userPersistencePort).save(userModel);
         when(encrypt.encryptPassword(anyString())).thenReturn("hashedPassword");
         userUseCase.save(userModel);
@@ -57,6 +58,7 @@ class UserUseCaseTest {
         verify(encrypt).encryptPassword(any());
         verify(userPersistencePort).save(userModelArgumentCaptor.capture());
         Assertions.assertEquals("hashedPassword", userModelArgumentCaptor.getValue().getPassword());
+        Assertions.assertEquals("email@email.com", userModelArgumentCaptor.getValue().getHashedEmail());
     }
 
     @Test
@@ -83,7 +85,8 @@ class UserUseCaseTest {
                 LocalDate.now(),
                 "email@email.com",
                 "123456",
-                1L
+                1L,
+                "email@email.com"
         );
         when(userPersistencePort.getUserByEmail("email@email.com")).thenReturn(userModel);
 

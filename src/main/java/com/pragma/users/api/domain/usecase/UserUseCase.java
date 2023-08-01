@@ -20,8 +20,9 @@ public class UserUseCase implements IUserServicePort {
 
     @Override
     public void save(UserModel userModel) {
-        userCognitoPersistencePort.save(userModel);
+        String hashedEmail = userCognitoPersistencePort.save(userModel);
         userModel.setPassword(encrypt.encryptPassword(userModel.getPassword()));
+        userModel.setHashedEmail(hashedEmail);
         userPersistencePort.save(userModel);
     }
 
