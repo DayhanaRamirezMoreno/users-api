@@ -69,8 +69,9 @@ test {
 
 sonar {
 	properties {
-		property "sonar.projectKey", "dayhana.ramirez_users-api"
-		property "sonar.organization", "dayhana-ramirez"
+		property "sonar.projectKey", "DayhanaRamirezMoreno_users-api"
+		property "sonar.organization", "dayhanaramirezmoreno"
+		property "sonar.host.url", "https://sonarcloud.io"
 	}
 }
 
