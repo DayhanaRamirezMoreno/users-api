@@ -1,4 +1,4 @@
 FROM openjdk:11
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+EXPOSE 8080
+ADD build/libs/users-api-0.0.1-SNAPSHOT.jar /app/users-api-0.0.1-SNAPSHOT.jar
+ENTRYPOINT ["java", "-jar", "/app/users-api-0.0.1-SNAPSHOT.jar"]

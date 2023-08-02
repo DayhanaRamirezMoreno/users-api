@@ -3,6 +3,8 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id 'java'
 	id 'jacoco'
+	id "org.sonarqube" version "4.2.1.3168"
+
 }
 
 group = 'com.pragma.powerup'
@@ -35,6 +37,9 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
 	developmentOnly "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
 	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+
+	implementation 'com.amazonaws:aws-java-sdk-cognitoidp:1.12.517'
 
 	runtimeOnly "mysql:mysql-connector-java:${mySqlConnectorVersion}"
 
@@ -46,6 +51,8 @@ dependencies {
 
 	implementation "org.springdoc:springdoc-openapi-ui:${openApiVersion}"
 	implementation "org.springdoc:springdoc-openapi-webflux-ui:${openApiVersion}"
+	implementation 'com.auth0:java-jwt:4.4.0'
+	implementation 'com.auth0:jwks-rsa:0.22.1'
 
 	testImplementation 'org.mockito:mockito-core:5.4.0'
 	testImplementation 'org.hamcrest:hamcrest:2.2'
@@ -58,4 +65,32 @@ tasks.named('test') {
 
 test {
 	finalizedBy jacocoTestReport
+}
+
+sonar {
+	properties {
+		property "sonar.projectKey", "DayhanaRamirezMoreno_users-api"
+		property "sonar.organization", "dayhanaramirezmoreno"
+		property "sonar.host.url", "https://sonarcloud.io"
+	}
+}
+
+jacocoTestReport {
+	dependsOn test
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"com/pragma/users/api/UsersApiApplication.class",
+					"com/pragma/users/api/infrastructure/out/jpa/mapper/**",
+					"com/pragma/users/api/infrastructure/out/jpa/entity/**",
+					"com/pragma/users/api/domain/model/**",
+					"com/pragma/users/api/infrastructure/documentation/**",
+					"com/pragma/users/api/infrastructure/configuration/**",
+					"com/pragma/users/api/application/mapper/**",
+					"com/pragma/users/api/infrastructure/validation/DateValidation.class",
+					"com/pragma/users/api/infrastructure/validation/DateValidationImpl.class"
+			])
+		}))
+	}
 }
