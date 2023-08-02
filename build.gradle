@@ -72,6 +72,7 @@ sonar {
 		property "sonar.projectKey", "DayhanaRamirezMoreno_users-api"
 		property "sonar.organization", "dayhanaramirezmoreno"
 		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.token", "dfa58f73f4055b763bf6d00468846d8fd2c92ec9"
 	}
 }
 
@@ -94,9 +95,8 @@ jacocoTestReport {
 			])
 		}))
 	}
+}
 
-	reports {
-		xml.enabled true
-	}
-
+reports {
+	xml.enabled true
 }
