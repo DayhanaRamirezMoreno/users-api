@@ -77,6 +77,7 @@ sonar {
 
 jacocoTestReport {
 	dependsOn test
+	finalizedBy(sonar)
 
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
@@ -93,4 +94,9 @@ jacocoTestReport {
 			])
 		}))
 	}
+
+	reports {
+		xml.enabled true
+	}
+
 }
