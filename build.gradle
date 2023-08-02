@@ -3,8 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id 'java'
 	id 'jacoco'
-	id "org.sonarqube" version "4.2.1.3168"
-
+	id "org.sonarqube" version "4.3.0.3225"
 }
 
 group = 'com.pragma.powerup'
@@ -73,13 +72,22 @@ sonar {
 		property "sonar.organization", "dayhanaramirezmoreno"
 		property "sonar.host.url", "https://sonarcloud.io"
 		property "sonar.token", "dfa58f73f4055b763bf6d00468846d8fd2c92ec9"
+		property "sonar.inclusions", "src/main/java/com/pragma/users/api/application/handler/impl/**"
+		property "sonar.inclusions", "src/main/java/com/pragma/users/api/domain/usecase/**"
+		property "sonar.inclusions", "src/main/java/com/pragma/users/api/infrastructure/aws/cognito/**"
+		property "sonar.inclusions", "src/main/java/com/pragma/users/api/infrastructure/exceptionhandler/**"
+		property "sonar.inclusions", "src/main/java/com/pragma/users/api/infrastructure/input/rest/**"
+		property "sonar.inclusions", "src/main/java/com/pragma/users/api/infrastructure/validation/**"
+		property "sonar.inclusions", "src/main/java/com/pragma/users/api/infrastructure/out/jpa/adapter/**"
+
 	}
 }
 
 jacocoTestReport {
 	dependsOn test
+
 	reports {
-		xml.enabled true
+		xml.required = true
 	}
 
 	afterEvaluate {
