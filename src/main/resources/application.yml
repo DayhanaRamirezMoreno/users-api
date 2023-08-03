@@ -2,6 +2,8 @@ server:
   port: 8081
 
 spring:
+  application:
+    name: users-api
   datasource:
     url: ${DB_USERS_RDS_URL}
     username: ${DB_USERS_RDS_USERNAME}
@@ -28,4 +30,4 @@ aws:
   access:
     key: ${AWS_ACCESS_KEY}
   secret:
-    key: $AWS_SECRET_KEY}
+    key: ${AWS_SECRET_KEY}
