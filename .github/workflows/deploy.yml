@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-deploy:
-    name: Build and analyze
+    name: Build and update
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,7 +29,7 @@ jobs:
         run: ./gradlew build sonar --info
 
       - name: Build Docker Image
-        uses : actions/build-push-action@v2
+        uses : docker/build-push-action@v2
         with:
           context: .
           dockerfile: Dockerfile
@@ -43,7 +43,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Push to Docker Hub
-        uses : actions/build-push-action@v2
+        uses : docker/build-push-action@v2
         with:
           context: .
           dockerfile: Dockerfile
