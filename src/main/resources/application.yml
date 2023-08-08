@@ -5,9 +5,9 @@ spring:
   application:
     name: users-api
   datasource:
-    url: ${DB_USERS_RDS_URL}
-    username: ${DB_USERS_RDS_USERNAME}
-    password: ${DB_RDS_PASSWORD}
+    url: jdbc:mysql://database-1.cvpbe8ysmuze.us-east-2.rds.amazonaws.com:3306/usersapi
+    username: usersapidb
+    password: 12345678*
 
   jpa:
     hibernate:
@@ -28,6 +28,6 @@ aws:
     jwk: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_EFzNkvd5I/.well-known/jwks.json
     issuer: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_EFzNkvd5I
   access:
-    key: ${AWS_ACCESS_KEY}
+    key: AKIA2BGRR3N6UUYZUADU
   secret:
-    key: ${AWS_SECRET_KEY}
+    key: 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
