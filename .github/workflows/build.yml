@@ -90,17 +90,21 @@ jobs:
 
       - name: Update Task Definition
         run: |
-          TASK_DEF_NAME="monday-app-task"
-          REPOSITORY_URI="689781726077.dkr.ecr.us-east-2.amazonaws.com/new-users-api-repo"
-          NEW_IMAGE_TAG="latest"
-          # Get the current task definition details
-          CURRENT_TASK_DEF_JSON=$(aws ecs describe-task-definition --task-definition $TASK_DEF_NAME)
-          # Update the image tag in the container definition
-          NEW_TASK_DEF_JSON=$(echo $CURRENT_TASK_DEF_JSON | jq '.taskDefinition.containerDefinitions[0].image = "'$REPOSITORY_URI:$NEW_IMAGE_TAG'"')
-          # Register the updated task definition
-          NEW_TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEF_JSON" --query 'taskDefinition.taskDefinitionArn' --output text)
-          echo "Updated task definition created with ARN: $NEW_TASK_DEF_ARN"
-
-      
-
-
+          TASK_NAME=monday-app-task
+          SERVICE_NAME=my-new-service
+          IMAGE_NAME=new-users-api-repo
+          CLUSTER_NAME=demo-app-cluster
+          REGION=us-east-2
+          VERSION=latest
+          ACCOUNT_NUMBER=689781726077
+  
+          NEW_IMAGE=$ACCOUNT_NUMBER.dkr.ecr.$REGION.amazonaws.com/$IMAGE_NAME:$VERSION
+          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_NAME" --region "$REGION")
+          NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$NEW_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
+          NEW_REVISION=$(aws ecs register-task-definition --region "$REGION" --cli-input-json "$NEW_TASK_DEFINITION")
+          NEW_REVISION_DATA=$(echo $NEW_REVISION | jq '.taskDefinition.revision')
+  
+          NEW_SERVICE=$(aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --task-definition $TASK_NAME --force-new-deployment)
+  
+          echo "done"
+          echo "${TASK_NAME}, Revision: ${NEW_REVISION_DATA}
