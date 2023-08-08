@@ -1,0 +1,55 @@
+trigger:
+  branches:
+    include:
+    - master
+ 
+pr:
+  branches:
+    include:
+    - master
+ 
+pool:
+  vmImage: 'ubuntu-latest'
+ 
+jobs:
+- job: BuildAndAnalyze
+  displayName: 'Build and analyze'
+  steps:
+  - checkout: self
+    fetchDepth: 0
+ 
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '11'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'AzureStorage'
+ 
+  - task: Cache@2
+    inputs:
+      path: ~/.sonar/cache
+      key: 'sonar | "$(Agent.OS)"'
+      restoreKeys: 'sonar | "$(Agent.OS)"'
+ 
+  - task: Cache@2
+    inputs:
+      path: ~/.gradle/caches
+      key: 'gradle | "$(Agent.OS)" | **/*.gradle'
+      restoreKeys: 'gradle | "$(Agent.OS)"'
+ 
+  - script: chmod +x ./gradlew
+    displayName: 'Make gradlew executable'
+ 
+  - script: ./gradlew build sonar --info
+    displayName: 'Build and analyze'
+    env:
+      GITHUB_TOKEN: $(GITHUB_TOKEN)
+      SONAR_TOKEN: $(SONAR_TOKEN)
+ 
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'DockerHubServiceConnection' # Asume que tienes una conexión de servicio llamada "DockerHubServiceConnection"
+      repository: '$(DOCKER_HUB_USERNAME)/users-api'
+      command: 'buildAndPush'
+      Dockerfile: '**/Dockerfile'
+      tags: 'latest'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
