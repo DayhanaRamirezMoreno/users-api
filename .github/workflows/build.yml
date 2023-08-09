@@ -87,3 +87,24 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Update Task Definition
+        run: |
+          TASK_NAME=monday-app-task
+          SERVICE_NAME=my-new-service
+          IMAGE_NAME=new-users-api-repo
+          CLUSTER_NAME=demo-app-cluster
+          REGION=us-east-2
+          VERSION=latest
+          ACCOUNT_NUMBER=689781726077
+  
+          NEW_IMAGE=$ACCOUNT_NUMBER.dkr.ecr.$REGION.amazonaws.com/$IMAGE_NAME:$VERSION
+          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_NAME" --region "$REGION")
+          NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$NEW_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
+          NEW_REVISION=$(aws ecs register-task-definition --region "$REGION" --cli-input-json "$NEW_TASK_DEFINITION")
+          NEW_REVISION_DATA=$(echo $NEW_REVISION | jq '.taskDefinition.revision')
+  
+          NEW_SERVICE=$(aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --task-definition $TASK_NAME --force-new-deployment)
+  
+          echo "done"
+          echo "${TASK_NAME}, Revision: ${NEW_REVISION_DATA}
