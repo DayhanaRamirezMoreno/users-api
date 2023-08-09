@@ -90,13 +90,13 @@ jobs:
 
       - name: Update Task Definition
         run: |
-          TASK_NAME=monday-app-task
-          SERVICE_NAME=my-new-service
-          IMAGE_NAME=new-users-api-repo
-          CLUSTER_NAME=demo-app-cluster
-          REGION=us-east-2
-          VERSION=latest
-          ACCOUNT_NUMBER=689781726077
+          TASK_NAME=${{ secrets.TASK_NAME }}
+          SERVICE_NAME=${{ secrets.SERVICE_NAME }}
+          IMAGE_NAME=${{ secrets.IMAGE_NAME }}
+          CLUSTER_NAME=${{ secrets.CLUSTER_NAME }}
+          REGION=${{ secrets.REGION}}
+          VERSION=${{ secrets.VERSION }}
+          ACCOUNT_NUMBER=${{ secrets.ACCOUNT_NUMBER }}
   
           NEW_IMAGE=$ACCOUNT_NUMBER.dkr.ecr.$REGION.amazonaws.com/$IMAGE_NAME:$VERSION
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_NAME" --region "$REGION")
