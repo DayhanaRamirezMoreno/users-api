@@ -89,6 +89,14 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Update Task Definition
+        env:
+          TASK_NAME=${{ secrets.TASK_NAME }}
+          SERVICE_NAME=${{ secrets.SERVICE_NAME }}
+          IMAGE_NAME=${{ secrets.IMAGE_NAME }}
+          CLUSTER_NAME=${{ secrets.CLUSTER_NAME }}
+          REGION=${{ secrets.REGION}}
+          VERSION=${{ secrets.VERSION }}
+          ACCOUNT_NUMBER=${{ secrets.ACCOUNT_NUMBER }}
         run: |
           NEW_IMAGE=$ACCOUNT_NUMBER.dkr.ecr.$REGION.amazonaws.com/$IMAGE_NAME:$VERSION
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_NAME" --region "$REGION")
@@ -100,11 +108,4 @@ jobs:
   
           echo "done"
           echo "${TASK_NAME}, Revision: ${NEW_REVISION_DATA}
-        env:
-          TASK_NAME=${{ secrets.TASK_NAME }}
-          SERVICE_NAME=${{ secrets.SERVICE_NAME }}
-          IMAGE_NAME=${{ secrets.IMAGE_NAME }}
-          CLUSTER_NAME=${{ secrets.CLUSTER_NAME }}
-          REGION=${{ secrets.REGION}}
-          VERSION=${{ secrets.VERSION }}
-          ACCOUNT_NUMBER=${{ secrets.ACCOUNT_NUMBER }}
+
