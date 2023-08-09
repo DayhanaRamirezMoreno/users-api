@@ -82,21 +82,21 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: new-users-api-repo
-          IMAGE_TAG: latest
+          ECR_REPOSITORY: ${{ secrets.IMAGE_NAME }}
+          IMAGE_TAG: ${{ secrets.VERSION }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Update Task Definition
         env:
-          TASK_NAME=${{ secrets.TASK_NAME }}
-          SERVICE_NAME=${{ secrets.SERVICE_NAME }}
-          IMAGE_NAME=${{ secrets.IMAGE_NAME }}
-          CLUSTER_NAME=${{ secrets.CLUSTER_NAME }}
-          REGION=${{ secrets.REGION}}
-          VERSION=${{ secrets.VERSION }}
-          ACCOUNT_NUMBER=${{ secrets.ACCOUNT_NUMBER }}
+          TASK_NAME: ${{ secrets.TASK_NAME }}
+          SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+          IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+          CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+          REGION: ${{ secrets.REGION}}
+          VERSION: ${{ secrets.VERSION }}
+          ACCOUNT_NUMBER: ${{ secrets.ACCOUNT_NUMBER }}
         run: |
           NEW_IMAGE=$ACCOUNT_NUMBER.dkr.ecr.$REGION.amazonaws.com/$IMAGE_NAME:$VERSION
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_NAME" --region "$REGION")
